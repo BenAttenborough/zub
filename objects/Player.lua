@@ -3,42 +3,44 @@ Player = {
     y=80,
     sprite = 64,
     direction = Directions.left,
-    counter = 0
+    counter = 0,
+    moving = false
 }
 
 function Player:update()
     local proposedX = self.x
     local proposedY = self.y
-    if Time % 10 == 0 then
+    if Time % 5 == 0 then
         self.counter = (self.counter + 1) % 4
     end
 
     if (btn(Buttons.left)) then 
         proposedX-=1
         self.direction=Directions.left
-        -- self:toggleStep()
-    end
-    if (btn(Buttons.right)) then 
+        self.moving = true
+    elseif (btn(Buttons.right)) then 
         proposedX+=1 
         self.direction=Directions.right
-        -- self:toggleStep()
-    end
-    if (btn(Buttons.up)) then 
+        self.moving = true
+    elseif (btn(Buttons.up)) then 
         proposedY-=1
         self.direction=Directions.up
         -- self:toggleStep()
-    end
-    if (btn(Buttons.down)) then 
+    elseif (btn(Buttons.down)) then 
         proposedY+=1 
         self.direction=Directions.down
         -- self:toggleStep()
+    else
+        self.moving = false
     end
     self.x = proposedX
 end
 
 function Player:draw()
     local sprite = self.sprite -- + (self.counter * 2)
-    if Time >= 20 then
+    if self.moving then
+        sprite = 72 + (self.counter * 2)
+    elseif Time >= 20 then
         if Time >= 40 then
             sprite += 4
         else
@@ -61,6 +63,9 @@ function Player:draw()
         PlayerSprite.width,
         flip
     )
+    if self.moving then
+        print("moving",20,0,Colours.pink)
+    end
 end
 
 function can_move(x,y)
