@@ -25,11 +25,9 @@ function Player:update()
     elseif (btn(Buttons.up)) then 
         proposedY-=1
         self.direction=Directions.up
-        -- self:toggleStep()
     elseif (btn(Buttons.down)) then 
         proposedY+=1 
         self.direction=Directions.down
-        -- self:toggleStep()
     else
         self.moving = false
     end
@@ -37,9 +35,11 @@ function Player:update()
 end
 
 function Player:draw()
-    local sprite = self.sprite -- + (self.counter * 2)
+    local sprite = self.sprite
+    local bounce = 0
     if self.moving then
-        sprite = 72 + (self.counter * 2)
+        sprite = 96 + (self.counter * 2)
+        bounce = self.counter % 2
     elseif Time >= 20 then
         if Time >= 40 then
             sprite += 4
@@ -58,7 +58,7 @@ function Player:draw()
         PlayerSprite.height, 
         PlayerSprite.width, 
         self.x, 
-        self.y, 
+        self.y - bounce, 
         PlayerSprite.height, 
         PlayerSprite.width,
         flip
