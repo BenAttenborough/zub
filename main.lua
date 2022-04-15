@@ -9,6 +9,7 @@ end
 
 function _draw()
     cls()
-    print(Time, 1, 1, Colours.red)
     player:draw()
+    map()
+    print(Time, 1, 1, Colours.red)
 end
