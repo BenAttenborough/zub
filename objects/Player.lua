@@ -8,6 +8,7 @@ Player = {
     counter = 0,
     moving = false,
     isJumping = false,
+    isFalling = false,
     DY = 0,
     jumpTimer = 0,
     acc = 0.01
@@ -41,13 +42,25 @@ function Player:update()
     else
         self.moving = false
     end
-    
 end
 
 function Player:jump()
     self.jumpTimer = self.jumpTimer + 1
     self.DY = self.DY + self.acc
     self.y = self.y - (1 - self.DY)
+    if not self.isFalling then
+        if self.DY > 1 then
+            self.isFalling = true
+        end
+    else
+        -- Debug.log("Falling")
+        self.direction = Directions.down
+        if MapCollision(self,Flags.impassableDown) or MapCollision(self,Flags.impassable) then
+            self.isJumping = false
+            self.isFalling = false
+            self.DY = 0
+        end
+    end
 end
 
 function Player:draw()

@@ -38,7 +38,8 @@ Directions={
 }
 
 Flags={
-    impassable=0
+    impassable=0,
+    impassableDown=1
 }
 
 Bounds={
