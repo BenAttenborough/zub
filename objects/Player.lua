@@ -1,6 +1,8 @@
 Player = {
     x=50,
     y=80,
+    w=16,
+    h=16,
     sprite = 64,
     direction = Directions.left,
     counter = 0,
@@ -12,32 +14,34 @@ Player = {
 }
 
 function Player:update()
-    local proposedX = self.x
-    local proposedY = self.y
     if Time % 5 == 0 then
         self.counter = (self.counter + 1) % 4
     end
 
     if (btn(Buttons.left)) then 
-        proposedX-=1
         self.direction=Directions.left
         self.moving = true
-    elseif (btn(Buttons.right)) then 
-        proposedX+=1 
+        if not MapCollision(self,Flags.impassable) then
+            self.x -= 1
+        end
+    elseif (btn(Buttons.right)) then
         self.direction=Directions.right
+        if not MapCollision(self,Flags.impassable) then
+            self.x += 1
+        end
         self.moving = true
     elseif (btn(Buttons.up)) then 
-        proposedY-=1
+        self.y-=1
         self.direction=Directions.up
     elseif (btn(Buttons.down)) then 
-        proposedY+=1 
+        self.y+=1 
         self.direction=Directions.down
     elseif (btnp(Buttons.x)) then
         self.isJumping = true
     else
         self.moving = false
     end
-    self.x = proposedX
+    
 end
 
 function Player:jump()

@@ -1,3 +1,5 @@
+logfile = "log.txt"
+
 CellSize = 8
 
 Colours={
@@ -33,6 +35,10 @@ Directions={
     right=1,
     up=2,
     down=3
+}
+
+Flags={
+    impassable=0
 }
 
 Bounds={
