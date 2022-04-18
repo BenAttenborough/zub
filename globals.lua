@@ -42,6 +42,8 @@ Bounds={
     down=15
 }
 
+Gravity = 0.3
+
 PlayerSprite={
     height=16,
     width=16

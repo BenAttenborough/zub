@@ -4,7 +4,11 @@ Player = {
     sprite = 64,
     direction = Directions.left,
     counter = 0,
-    moving = false
+    moving = false,
+    isJumping = false,
+    DY = 0,
+    jumpTimer = 0,
+    acc = 0.01
 }
 
 function Player:update()
@@ -28,10 +32,18 @@ function Player:update()
     elseif (btn(Buttons.down)) then 
         proposedY+=1 
         self.direction=Directions.down
+    elseif (btnp(Buttons.x)) then
+        self.isJumping = true
     else
         self.moving = false
     end
     self.x = proposedX
+end
+
+function Player:jump()
+    self.jumpTimer = self.jumpTimer + 1
+    self.DY = self.DY + self.acc
+    self.y = self.y - (1 - self.DY)
 end
 
 function Player:draw()
@@ -65,6 +77,9 @@ function Player:draw()
     )
     if self.moving then
         print("moving",20,0,Colours.pink)
+    end
+    if self.isJumping then
+        self:jump()
     end
 end
 
