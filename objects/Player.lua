@@ -9,8 +9,7 @@ Player = {
     moving = false,
     isJumping = false,
     isFalling = false,
-    DY = 0,
-    jumpTimer = 0,
+    DY = 1,
     acc = 0.01
 }
 
@@ -22,12 +21,12 @@ function Player:update()
     if (btn(Buttons.left)) then 
         self.direction=Directions.left
         self.moving = true
-        if not MapCollision(self,Flags.impassable) then
+        if not MapCollision(self,Directions.left,Flags.impassable) then
             self.x -= 1
         end
     elseif (btn(Buttons.right)) then
         self.direction=Directions.right
-        if not MapCollision(self,Flags.impassable) then
+        if not MapCollision(self,Directions.right,Flags.impassable) then
             self.x += 1
         end
         self.moving = true
@@ -42,23 +41,34 @@ function Player:update()
     else
         self.moving = false
     end
+
+    if not self.isJumping
+        and not MapCollision(self,Directions.down,Flags.impassableDown)
+        and not MapCollision(self,Directions.down,Flags.impassable) 
+    then
+        self:fall()
+    end
+end
+
+function Player:fall()
+    Debug.log("Falling!")
+    self.DY = self.DY + self.acc
+    self.y = self.y + self.DY
 end
 
 function Player:jump()
-    self.jumpTimer = self.jumpTimer + 1
     self.DY = self.DY + self.acc
-    self.y = self.y - (1 - self.DY)
+    self.y = self.y - (2 - self.DY)
     if not self.isFalling then
         if self.DY > 1 then
             self.isFalling = true
         end
     else
         -- Debug.log("Falling")
-        self.direction = Directions.down
-        if MapCollision(self,Flags.impassableDown) or MapCollision(self,Flags.impassable) then
+        if MapCollision(self,Directions.down,Flags.impassableDown) or MapCollision(self,Directions.down,Flags.impassable) then
             self.isJumping = false
             self.isFalling = false
-            self.DY = 0
+            self.DY = 1
         end
     end
 end
