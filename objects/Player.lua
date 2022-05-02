@@ -10,15 +10,31 @@ Player = {
     isJumping = false,
     isFalling = false,
     DY = 1,
-    acc = 0.01
+    acc = 0.15,
+    state = PlayerState.walking
 }
 
-function Player:update()
-    if Time % 5 == 0 then
-        self.counter = (self.counter + 1) % 4
+function Player:jumpingUpdate()
+    self.DY = self.DY + self.acc
+    self.y = self.y - (5 - self.DY)
+    -- Debug.log(self.DY)
+    Debug.log(self.y)
+    if not self.isFalling then
+        if self.DY > 5 then
+            self.isFalling = true
+        end
+    else
+        if MapCollision(self,Directions.down,Flags.impassableDown) or MapCollision(self,Directions.down,Flags.impassable) then
+            self.DY = 1
+            self.isFalling = false
+            self.state = PlayerState.walking
+        end
     end
+end
+
+function Player:walkingUpdate()
     if (btnp(Buttons.x)) then
-        self.isJumping = true
+        self.state = PlayerState.jumping
     elseif (btn(Buttons.left)) then 
         self.direction=Directions.left
         self.moving = true
@@ -41,11 +57,23 @@ function Player:update()
         self.moving = false
     end
 
-    if not self.isJumping
-        and not MapCollision(self,Directions.down,Flags.impassableDown)
-        and not MapCollision(self,Directions.down,Flags.impassable) 
-    then
-        self:fall()
+    -- if not self.isJumping
+    --     and not MapCollision(self,Directions.down,Flags.impassableDown)
+    --     and not MapCollision(self,Directions.down,Flags.impassable) 
+    -- then
+    --     self:fall()
+    -- end
+end
+
+function Player:update()
+    if Time % 5 == 0 then
+        self.counter = (self.counter + 1) % 4
+    end
+
+    if self.state == PlayerState.walking then
+        self:walkingUpdate()
+    elseif self.state == PlayerState.jumping then
+        self:jumpingUpdate()
     end
 end
 
@@ -53,22 +81,6 @@ function Player:fall()
     Debug.log("Falling!")
     self.DY = self.DY + self.acc
     self.y = self.y + self.DY
-end
-
-function Player:jump()
-    self.DY = self.DY + self.acc
-    self.y = self.y - (2 - self.DY)
-    if not self.isFalling then
-        if self.DY > 1 then
-            self.isFalling = true
-        end
-    else
-        if MapCollision(self,Directions.down,Flags.impassableDown) or MapCollision(self,Directions.down,Flags.impassable) then
-            self.isJumping = false
-            self.isFalling = false
-            self.DY = 1
-        end
-    end
 end
 
 function Player:draw()
@@ -102,9 +114,6 @@ function Player:draw()
     )
     if self.moving then
         print("moving",20,0,Colours.pink)
-    end
-    if self.isJumping then
-        self:jump()
     end
 end
 

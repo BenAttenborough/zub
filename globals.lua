@@ -37,6 +37,12 @@ Directions={
     down=3
 }
 
+PlayerState={
+    walking=0,
+    jumping=1,
+    crouching=2
+}
+
 Flags={
     impassable=0,
     impassableDown=1
