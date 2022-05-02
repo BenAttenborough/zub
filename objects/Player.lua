@@ -17,8 +17,9 @@ function Player:update()
     if Time % 5 == 0 then
         self.counter = (self.counter + 1) % 4
     end
-
-    if (btn(Buttons.left)) then 
+    if (btnp(Buttons.x)) then
+        self.isJumping = true
+    elseif (btn(Buttons.left)) then 
         self.direction=Directions.left
         self.moving = true
         if not MapCollision(self,Directions.left,Flags.impassable) then
@@ -36,8 +37,6 @@ function Player:update()
     elseif (btn(Buttons.down)) then 
         self.y+=1 
         self.direction=Directions.down
-    elseif (btnp(Buttons.x)) then
-        self.isJumping = true
     else
         self.moving = false
     end
@@ -64,7 +63,6 @@ function Player:jump()
             self.isFalling = true
         end
     else
-        -- Debug.log("Falling")
         if MapCollision(self,Directions.down,Flags.impassableDown) or MapCollision(self,Directions.down,Flags.impassable) then
             self.isJumping = false
             self.isFalling = false
