@@ -14,6 +14,30 @@ Player = {
     state = PlayerState.walking
 }
 
+function Player:movement()
+    if (btn(Buttons.left)) then 
+        self.direction=Directions.left
+        self.moving = true
+        if not MapCollision(self,Directions.left,Flags.impassable) then
+            self.x -= 1
+        end
+    elseif (btn(Buttons.right)) then
+        self.direction=Directions.right
+        if not MapCollision(self,Directions.right,Flags.impassable) then
+            self.x += 1
+        end
+        self.moving = true
+    elseif (btn(Buttons.up)) then 
+        self.y-=1
+        self.direction=Directions.up
+    elseif (btn(Buttons.down)) then 
+        self.y+=1 
+        self.direction=Directions.down
+    else
+        self.moving = false
+    end
+end
+
 function Player:jumpingUpdate()
     self.DY = self.DY + self.acc
     self.y = self.y - (5 - self.DY)
@@ -35,27 +59,8 @@ end
 function Player:walkingUpdate()
     if (btnp(Buttons.x)) then
         self.state = PlayerState.jumping
-    elseif (btn(Buttons.left)) then 
-        self.direction=Directions.left
-        self.moving = true
-        if not MapCollision(self,Directions.left,Flags.impassable) then
-            self.x -= 1
-        end
-    elseif (btn(Buttons.right)) then
-        self.direction=Directions.right
-        if not MapCollision(self,Directions.right,Flags.impassable) then
-            self.x += 1
-        end
-        self.moving = true
-    elseif (btn(Buttons.up)) then 
-        self.y-=1
-        self.direction=Directions.up
-    elseif (btn(Buttons.down)) then 
-        self.y+=1 
-        self.direction=Directions.down
-    else
-        self.moving = false
     end
+    self:movement()
 
     -- if not self.isJumping
     --     and not MapCollision(self,Directions.down,Flags.impassableDown)
