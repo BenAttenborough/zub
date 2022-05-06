@@ -89,6 +89,8 @@ function Player:fall()
 end
 
 function Player:draw()
+    cls()
+    map()
     local sprite = self.sprite
     local bounce = 0
     if self.moving then

@@ -3,13 +3,19 @@ function _init()
 end
 
 function _update()
-    Time = (Time + 1) % 60
-    Player:update()
+    -- Time = (Time + 1) % 60
+    -- Player:update()
+    StateMachine:update()
 end
 
 function _draw()
     cls()
-    Player:draw()
-    map()
-    print(Time, 1, 1, Colours.red)
+    StateMachine:draw()
+    -- Player:draw()
+    -- map()
+    -- print(Time, 1, 1, Colours.red)
 end
+
+-- function StateMachine(state)
+--     if state == GameState.menu return Menu end
+-- end

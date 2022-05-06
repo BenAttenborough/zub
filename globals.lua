@@ -61,3 +61,8 @@ PlayerSprite={
     height=16,
     width=16
 }
+
+GameState={
+    menu=0,
+    game=1
+}
