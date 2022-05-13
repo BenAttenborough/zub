@@ -3,32 +3,32 @@ StateMachine = {
 }
 
 function StateMachine:init()
-    if self.currentState == GameState.game then
-        
-    else
-
-    end
 end
 
 function StateMachine:update()
-    if self.currentState == GameState.game then
-        Player:update()
-    else
+    if self.currentState == GameState.menu then
         MenuState:update()
+    elseif self.currentState == GameState.game then
+        Game:update()
     end
 end
 
 function StateMachine:draw()
-    if self.currentState == GameState.game then
-        Player:draw()
-    else
+    if self.currentState == GameState.menu then
         MenuState:draw()
+    elseif self.currentState == GameState.game then
+        Game:draw()
+    else
+        ErrorState:draw()
     end
 end
 
 function StateMachine:changeState(state)
     if state == GameState.menu then
+        -- old state exit
         self.currentState = GameState.menu
+        -- initialise state
+        -- state enter
     elseif state == GameState.game then
         self.currentState = GameState.game
     end

@@ -1,4 +1,4 @@
-Player = {
+Game = {
     x=50,
     y=80,
     w=16,
@@ -14,63 +14,73 @@ Player = {
     state = PlayerState.walking
 }
 
-function Player:movement()
+function Game:movement()
     if (btn(Buttons.left)) then 
         self.direction=Directions.left
         self.moving = true
         if not MapCollision(self,Directions.left,Flags.impassable) then
             self.x -= 1
         end
+        
     elseif (btn(Buttons.right)) then
         self.direction=Directions.right
         if not MapCollision(self,Directions.right,Flags.impassable) then
             self.x += 1
         end
         self.moving = true
-    elseif (btn(Buttons.up)) then 
-        self.y-=1
-        self.direction=Directions.up
-    elseif (btn(Buttons.down)) then 
-        self.y+=1 
-        self.direction=Directions.down
     else
         self.moving = false
     end
 end
 
-function Player:jumpingUpdate()
+function Game:jumpingUpdate()
     self.DY = self.DY + self.acc
-    self.y = self.y - (5 - self.DY)
-    -- Debug.log(self.DY)
-    Debug.log(self.y)
+    local potentialY = flr(self.y - (5 - self.DY))
+
     if not self.isFalling then
         if self.DY > 5 then
             self.isFalling = true
         end
     else
-        if MapCollision(self,Directions.down,Flags.impassableDown) or MapCollision(self,Directions.down,Flags.impassable) then
-            self.DY = 1
-            self.isFalling = false
-            self.state = PlayerState.walking
-        end
+        local mockPlayer = {
+            x = self.x,
+            y = self.y,
+            w = self.w,
+            h = self.h
+        }
+        for i = self.y, potentialY do
+            mockPlayer.y = i
+            -- Need to check each position below character as they fall
+            if MapCollision(mockPlayer,Directions.down,Flags.impassableDown) or MapCollision(mockPlayer,Directions.down,Flags.impassable) then
+                potentialY = i
+                self.DY = 1
+                self.isFalling = false
+                self.state = PlayerState.walking
+                break
+            end
+        end 
     end
+    self.y = potentialY
 end
 
-function Player:walkingUpdate()
-    if (btnp(Buttons.x)) then
+function Game:walkingUpdate()
+    if MapCollision(self,Directions.down, Flags.impassableDown) then
+        -- self.DY = 1
+        -- self.isFalling = true
+        -- self.state = PlayerState.walking
+        -- print("Falling", 10, 10, Colours.red)
+        -- Debug.log("Falling")
+    elseif (btnp(Buttons.x)) then
         self.state = PlayerState.jumping
     end
+    if (btn(Buttons.o)) then
+        Debug.log("Bang!")
+    end
     self:movement()
-
-    -- if not self.isJumping
-    --     and not MapCollision(self,Directions.down,Flags.impassableDown)
-    --     and not MapCollision(self,Directions.down,Flags.impassable) 
-    -- then
-    --     self:fall()
-    -- end
 end
 
-function Player:update()
+function Game:update()
+    Time = (Time + 1) % 60
     if Time % 5 == 0 then
         self.counter = (self.counter + 1) % 4
     end
@@ -82,13 +92,13 @@ function Player:update()
     end
 end
 
-function Player:fall()
-    Debug.log("Falling!")
-    self.DY = self.DY + self.acc
-    self.y = self.y + self.DY
-end
+-- function Game:fall()
+--     Debug.log("Falling!")
+--     self.DY = self.DY + self.acc
+--     self.y = self.y + self.DY
+-- end
 
-function Player:draw()
+function Game:draw()
     cls()
     map()
     local sprite = self.sprite
