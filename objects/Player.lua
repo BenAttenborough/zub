@@ -33,6 +33,28 @@ function Game:movement()
     end
 end
 
+function Game:fallingUpdate()
+    self.DY = self.DY + self.acc
+    local potentialY = flr(self.y - (1 - self.DY))
+    local mockPlayer = {
+        x = self.x,
+        y = self.y,
+        w = self.w,
+        h = self.h
+    }
+    for i = self.y, potentialY do
+        mockPlayer.y = i
+        -- Need to check each position below character as they fall
+        if MapCollision(mockPlayer,Directions.down,Flags.impassableDown) or MapCollision(mockPlayer,Directions.down,Flags.impassable) then
+            potentialY = i
+            self.DY = 1
+            self.state = PlayerState.walking
+            break
+        end
+    end 
+    self.y = potentialY
+end
+
 function Game:jumpingUpdate()
     self.DY = self.DY + self.acc
     local potentialY = flr(self.y - (5 - self.DY))
@@ -64,13 +86,10 @@ function Game:jumpingUpdate()
 end
 
 function Game:walkingUpdate()
-    if MapCollision(self,Directions.down, Flags.impassableDown) then
-        -- self.DY = 1
-        -- self.isFalling = true
-        -- self.state = PlayerState.walking
-        -- print("Falling", 10, 10, Colours.red)
-        -- Debug.log("Falling")
-    elseif (btnp(Buttons.x)) then
+    if not MapCollision(self,Directions.down, Flags.impassableDown) then
+        self.state = PlayerState.falling
+    end
+    if (btnp(Buttons.x)) then
         self.state = PlayerState.jumping
     end
     if (btn(Buttons.o)) then
@@ -89,14 +108,10 @@ function Game:update()
         self:walkingUpdate()
     elseif self.state == PlayerState.jumping then
         self:jumpingUpdate()
+    elseif self.state == PlayerState.falling then
+        self:fallingUpdate()
     end
 end
-
--- function Game:fall()
---     Debug.log("Falling!")
---     self.DY = self.DY + self.acc
---     self.y = self.y + self.DY
--- end
 
 function Game:draw()
     cls()
