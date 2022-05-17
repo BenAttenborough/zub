@@ -4,20 +4,24 @@ Bullet = {
     fired = false
 }
 
--- can we create multiple bullets?
-function Bullet:init(x, y)
-    self.x = x
-    self.y = y
-    return self
+function Bullet:new(o)
+    o = o or {} -- create object if user does not provide one
+    setmetatable(o, self)
+    self.__index = self
+    return o
 end
 
-function Bullet:fire()
-    self.fired = true
+-- function Bullet:fire()
+--     self.fired = true
+-- end
+
+-- function Bullet:update()
+-- end
+
+function Bullet:draw()
+    spr(128, self.x - 7, self.y + 5)
 end
 
 function Bullet:update()
-end
-
-function Bullet:draw()
-    spr(123, self.x, self.y)
+    self.x -= 1
 end

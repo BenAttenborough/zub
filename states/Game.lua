@@ -93,7 +93,7 @@ function Game:walkingUpdate()
         self.state = PlayerState.jumping
     end
     if (btn(Buttons.o)) then
-        Debug.log("Bang!")
+        add(Bullets,Bullet:new{x=self.x, y=self.y})
     end
     self:movement()
 end
@@ -111,6 +111,9 @@ function Game:update()
     elseif self.state == PlayerState.falling then
         self:fallingUpdate()
     end
+
+    foreach(Bullets,updateBullet)
+
 end
 
 function Game:draw()
@@ -147,6 +150,18 @@ function Game:draw()
     if self.moving then
         print("moving",20,0,Colours.pink)
     end
+    -- spr(128,25,25)
+
+    foreach(Bullets,drawBullet)
+end
+
+function drawBullet(bullet)
+    -- spr(128,bullet.x,bullet.y)
+    bullet:draw()
+end
+
+function updateBullet(bullet)
+    bullet:update()
 end
 
 function can_move(x,y)

@@ -3,12 +3,14 @@ version 35
 __lua__
 #include main.lua
 #include globals.lua
-#include objects/player.lua
 #include helpers.lua
 #include debug.lua
 #include states/statemachine.lua
 #include states/menu.lua
+#include states/game.lua
 #include states/error.lua
+#include objects/bullet.lua
+#include objects/bullets.lua
 __gfx__
 000000000e0e0e0e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000e9e9e9e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
